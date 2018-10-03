@@ -1,0 +1,11 @@
+import code
+from scipy.io import wavfile
+import pandas as pd
+
+kaggle_train_csv = pd.read_csv('./urban-sound-classification/train.csv')
+gun_shot_index = kaggle_train_csv.query('Class == "gun_shot"')
+
+
+fs, data = wavfile.read('./data/example.wav')
+
+code.interact(local=locals())
