@@ -1,11 +1,26 @@
-import code
-from scipy.io import wavfile
+import librosa
 import pandas as pd
+import numpy as np
+import os
+import time
 
-kaggle_train_csv = pd.read_csv('./urban-sound-classification/train.csv')
-gun_shot_index = kaggle_train_csv.query('Class == "gun_shot"')
+start = time.time()
 
+files = os.listdir("./data/cleaned")
+data = pd.Series([librosa.load("./data/cleaned/"+x)[0] for x in files])
 
-fs, data = wavfile.read('./data/example.wav')
+df = pd.DataFrame()
+df['data'] = data
+df['label'] = 'gun_shot'
 
-code.interact(local=locals())
+print('Doing work, hold tight')
+labels = pd.read_csv('./urban-sound-classification/train.csv')
+files2 = os.listdir("./urban-sound-classification/train/Train")
+data2 = pd.Series([librosa.load('./urban-sound-classification/train/Train/'+x)[0] for x in files2])
+df2 = pd.DataFrame()
+df2['data'] = data2
+df2['label'] = labels['Class']
+df = df.append(df2)
+df.to_pickle('dataset.pkl')
+print('Done')
+print('Script took', time.time(), 'seconds')
