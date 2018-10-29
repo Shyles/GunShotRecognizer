@@ -18,6 +18,7 @@ default_audio_file = 'recording.wav'
 global_weights = torch.load('weights.pt')
 
 def main():
+	b
 	res = raw_input('Would you like to 1) record a new audio file or 2) use an existing audio file or 3) use your microphone to detect gunshots for next 5 minutes? Please type 1,2 or 3 and press Enter to choose.\n')
 
 	if res=='1':
@@ -58,12 +59,13 @@ def detect_gunshot(filename):
 
 def classify_gunshot(filename):
 	"""
-	:param x: full or relative path of the wav-file
-	:return: True if audio is a gunshot with higher than 97% probability, otherwise false
+	:param filename: full or relative path of the wav-file
+	:return: True if audio is a gunshot.
 	"""
 	input = load_wav(filename)
-	print(input)
-	predi = torch.argmax(model(input, global_weights)) == 1
+	result = model(input, global_weights)
+	print(result)
+	predi = torch.argmax(result) == 1
 	return predi
 
 def play_wav(filename):
