@@ -64,7 +64,6 @@ def classify_gunshot(filename):
 	"""
 	input = load_wav(filename)
 	result = model(input, global_weights)
-	print(result)
 	predi = torch.argmax(result) == 1
 	return predi
 
