@@ -10,6 +10,7 @@ import torch
 import time
 import os
 import datetime
+import numpy as np
 
 default_audio_file = 'recording.wav'
 weights = torch.load('weights.pt')
@@ -34,11 +35,12 @@ def main():
 			rec = Recorder(channels=2)
 			with rec.open(audio_file, 'wb') as recfile:
 				recfile.record(duration=2.0)
-			print('Gunshot has been detected at ' + str(datetime.datetime.now()))
+			if classify_gunshot(audio_file):
+				print('Gunshot has been detected at ' + str(datetime.datetime.now()))
 
 
 def load_wav(filename):
-     data, sample_rate = librosa.load('audio_falie_1.wav',res_type='kaiser_fast')
+     data, sample_rate = librosa.load(filename,res_type='kaiser_fast')
      feat = np.mean(librosa.feature.mfcc(y=data, sr=sample_rate, n_mfcc=40).T, axis=0)
      return Variable(torch.from_numpy(np.array([feat]))).float()
 
