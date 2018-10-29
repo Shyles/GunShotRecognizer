@@ -127,20 +127,23 @@ def model(x, weights):
     w1, b1, w2, b2 = weights
     return torch.mm(torch.sigmoid(torch.mm(x,w1)+b1),w2)+b2
 
-df = pd.read_pickle("dataset.pkl")
+def main(): # Allow importing
+    df = pd.read_pickle("dataset.pkl")
 
-# Train the model on dataset
-train(df)
+    # Train the model on dataset
+    train(df)
 
-# Load weights and data to test accuracy of model
-wei = torch.load('weights.pt')
-testdata = torch.load('testdata.pt')
-testtarget = torch.load('testtarget.pt')
+    # Load weights and data to test accuracy of model
+    wei = torch.load('weights.pt')
+    testdata = torch.load('testdata.pt')
+    testtarget = torch.load('testtarget.pt')
 
-# Turn prediction to one hot. Softmax is testing for application
-predi = torch.nn.functional.softmax(model(testdata,wei),dim=1)
-values = torch.argmax(predi,1).long()
-predi = torch.zeros(len(values), 2).scatter_(1, values.view(-1,1), 1)
+    # Turn prediction to one hot. Softmax is testing for application
+    predi = torch.nn.functional.softmax(model(testdata,wei),dim=1)
+    values = torch.argmax(predi,1).long()
+    predi = torch.zeros(len(values), 2).scatter_(1, values.view(-1,1), 1)
+    # Print accuracy in test set
+    print("Model's accuray in test set: %f" % accuracy_score(predi.detach().numpy(), testtarget.detach().numpy()))
 
-# Print accuracy in test set
-print("Model's accuray in test set: %f" % accuracy_score(predi.detach().numpy(), testtarget.detach().numpy()))
+if __name__ == "__main__":
+    main()

@@ -27,6 +27,8 @@ for file, label in zip(files, labels['Class']):
     rows_list.append(cols)
 
 df = pd.DataFrame(rows_list)
+
+b
 df.to_pickle('dataset.pkl')
 
 

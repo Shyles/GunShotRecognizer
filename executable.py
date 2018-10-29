@@ -11,6 +11,8 @@ import time
 import os
 import datetime
 import numpy as np
+from gunshotclassifier import model
+import code
 
 default_audio_file = 'recording.wav'
 weights = torch.load('weights.pt')
@@ -30,13 +32,16 @@ def main():
 		timestr = time.strftime("%Y%m%d-%H%M%S")
 		if os.path.exists('recordings') == False:
 			os.mkdir('recordings')
-		for i in range(1, 150): # Record 2 second audios for 150 times equals 5 minutes
-			audio_file = 'recordings/' + str(timestr) + '_recording_' + str(i) + '.wav'
-			rec = Recorder(channels=2)
-			with rec.open(audio_file, 'wb') as recfile:
-				recfile.record(duration=2.0)
-			if classify_gunshot(audio_file):
-				print('Gunshot has been detected at ' + str(datetime.datetime.now()))
+		try:
+			for i in range(1, 150): # Record 2 second audios for 150 times equals 5 minutes
+				audio_file = 'recordings/' + str(timestr) + '_recording_' + str(i) + '.wav'
+				rec = Recorder(channels=2)
+				with rec.open(audio_file, 'wb') as recfile:
+					recfile.record(duration=2.0)
+				if classify_gunshot(audio_file):
+					print('Gunshot has been detected at ' + str(datetime.datetime.now()))
+		except KeyboardInterrupt:
+			print('\nUser has aborted detection.\nExiting program.\n')
 
 
 def load_wav(filename):
@@ -58,16 +63,8 @@ def classify_gunshot(filename):
 	"""
 	wav_file = load_wav(filename)
 	predi = torch.nn.functional.softmax(model(wav_file,weights),dim=1)
+	print('prediction is' + str(predi.data.cpu().numpy()[0][1]))
 	return predi.data.cpu().numpy()[0][1] > 0.97
-
-def model(x, weights):
-    """
-    :param x: Input vector
-    :param weights: ANN weights
-    :return: Output vector of ANN
-    """
-    w1, b1, w2, b2 = weights
-    return torch.mm(torch.sigmoid(torch.mm(x,w1)+b1),w2)+b2
 
 def play_wav(filename):
 	wf = wave.open(filename, 'rb')
