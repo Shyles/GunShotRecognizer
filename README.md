@@ -6,14 +6,11 @@ This project contains a model for detecting gun shots in urban environments. Dat
 
 ## Usage
 
-There are a few ways to run our gunshot classifier:
 
-1)
-Manually installing all dependencies and running code staright from the files or
-2)
-Using executable for Mac OS as a standalone program.
 
-For option 1 you might be interested to load the dataset we used from [Kaggle](https://www.kaggle.com/pavansanagapati/urban-sound-classification). You can then train your own model by tinkering with the ```gunshotclassifier.py```. Just for running the program to detect gunshots, you can either issue ``python executable.py``` or something else. After you've started the program, you'll have 3 choices:
+You might be interested to load the dataset we used from [Kaggle](https://www.kaggle.com/pavansanagapati/urban-sound-classification). You can then train your own model by tinkering with the `gunshotclassifier.py`. Just for running the program to detect gunshots, you can run the `executable.py`. For training your own model, you'll need to check the `gunshotclassifier.py`.
+
+If you want jsut to use our model and detect gunshots using it, you'll have three options after you start the program.
 
 ### Record your own audio
 You can record your own 2 second long audio file by entering 1 after the first prompt. You will be asked if you want to listen to the audio before getting your prediction on whether the recording contains a gunshot.

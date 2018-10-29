@@ -15,7 +15,7 @@ from gunshotclassifier import model
 import code
 
 default_audio_file = 'recording.wav'
-weights = torch.load('weights.pt')
+global_weights = torch.load('weights.pt')
 
 def main():
 	res = raw_input('Would you like to 1) record a new audio file or 2) use an existing audio file or 3) use your microphone to detect gunshots for next 5 minutes? Please type 1,2 or 3 and press Enter to choose.\n')
@@ -54,17 +54,17 @@ def detect_gunshot(filename):
 	for i in range(0,3) : # We want to make the model more credible by not processing the recording too fast
 		print('.')
 		time.sleep(0.5)
-	print('Your recording has been classified as ...\n' + ('Gunshot', 'Not a gunshot.')[classify_gunshot(filename)])
+	print('Your recording has been classified as ...\n' + ('Not a gunshot.', 'Gunshot')[classify_gunshot(filename)])
 
 def classify_gunshot(filename):
 	"""
 	:param x: full or relative path of the wav-file
 	:return: True if audio is a gunshot with higher than 97% probability, otherwise false
 	"""
-	wav_file = load_wav(filename)
-	predi = torch.nn.functional.softmax(model(wav_file,weights),dim=1)
-	print('prediction is' + str(predi.data.cpu().numpy()[0][1]))
-	return predi.data.cpu().numpy()[0][1] > 0.97
+	input = load_wav(filename)
+	print(input)
+	predi = torch.argmax(model(input, global_weights)) == 1
+	return predi
 
 def play_wav(filename):
 	wf = wave.open(filename, 'rb')
